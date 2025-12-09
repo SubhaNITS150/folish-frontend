@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppImages } from '../../../assets/images/onboarding/index';
+import AppImages from "../../../assets/images/onboarding/index";
 import MyPressable from '../../../components/MyPressable';
 
 interface Props {

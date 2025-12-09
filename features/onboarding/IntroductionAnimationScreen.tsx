@@ -16,7 +16,7 @@ import {
   WelcomeView,
   TopBackSkipView,
   CenterNextButton,
-} from './scenes';
+} from '../onboarding/scenes';
 
 const IntroductionAnimationScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -109,7 +109,7 @@ const IntroductionAnimationScreen: React.FC = () => {
         <WelcomeView {...{ animationController }} />
       </Animated.View>
 
-      <TopBackSkipView {...{ onBackClick, onSkipClick, animationController }} />
+      <TopBackSkipView {...{ onNextClick, onBackClick, onSkipClick, animationController }} />
 
       <CenterNextButton {...{ onNextClick, animationController }} />
     </View>

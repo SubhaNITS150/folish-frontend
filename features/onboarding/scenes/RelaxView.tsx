@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { StyleSheet, Text, Animated, useWindowDimensions } from 'react-native';
-import { AppImages } from '../../../assets/images/onboarding/index';
+import AppImages from "../../../assets/images/onboarding/index";
 
 interface Props {
   animationController: React.RefObject<Animated.Value>;
