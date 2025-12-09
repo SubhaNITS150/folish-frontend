@@ -17,7 +17,7 @@ export default function Signup() {
     console.log("Signup data:", { name, email, password });
 
     alert("Account created!");
-    router.push("/"); 
+    router.push("/auth/otp"); 
   };
 
   return (
