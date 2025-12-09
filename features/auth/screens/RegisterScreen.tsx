@@ -15,9 +15,7 @@ export default function Signup() {
 
     // Call API here...
     console.log("Signup data:", { name, email, password });
-
-    alert("Account created!");
-    router.push("/auth/otp"); 
+    router.push("/auth/termsandpolicy"); 
   };
 
   return (
