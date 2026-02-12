@@ -1,4 +1,4 @@
-
+// app/profile/edit-profile.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -39,6 +39,7 @@ export default function EditProfileScreen() {
         <View style={{ width: 28 }} />
       </View>
 
+      {/* Avatar Section */}
       <View style={styles.avatarSection}>
         <View style={styles.avatarContainer}>
           <Image
@@ -51,7 +52,8 @@ export default function EditProfileScreen() {
         </View>
         <Text style={styles.changePhotoText}>Tap to change photo</Text>
       </View>
-=
+
+      {/* Form */}
       <View style={styles.form}>
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Name</Text>
@@ -111,6 +113,7 @@ export default function EditProfileScreen() {
           </View>
         </View>
 
+        {/* Interests */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Interests</Text>
           <View style={styles.interestsContainer}>
@@ -123,6 +126,7 @@ export default function EditProfileScreen() {
         </View>
       </View>
 
+      {/* Save Button */}
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Save Changes</Text>
       </TouchableOpacity>

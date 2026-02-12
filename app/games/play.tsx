@@ -1,13 +1,15 @@
-// app/games/play.tsx
+// app/games/play.tsx - FIXED GAME PLAYER
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ResizeMode, Video } from 'expo-av';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
     Alert,
     Dimensions,
     Modal,
+    StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -23,7 +25,8 @@ const INTERVENTION_VIDEOS = [
   'https://res.cloudinary.com/dg361q5uv/video/upload/v1759605664/Spaceship_s_Final_Flight_Into_Star_1_kqlm1q.mp4',
   'https://res.cloudinary.com/dg361q5uv/video/upload/v1759494142/Starship_Launch_to_Blinding_Star_1_mesgob.mp4',
 ];
-const INTERVENTION_INTERVALS = [120, 300, 480]; 
+
+const INTERVENTION_INTERVALS = [120, 300, 480];
 
 export default function GamePlayScreen() {
   const params = useLocalSearchParams();
@@ -38,6 +41,7 @@ export default function GamePlayScreen() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    StatusBar.setHidden(true);
     timerRef.current = setInterval(() => {
       setPlayTime((prev) => {
         const newTime = prev + 1;
@@ -49,6 +53,7 @@ export default function GamePlayScreen() {
     trackGameSession('start');
 
     return () => {
+      StatusBar.setHidden(false);
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
@@ -65,7 +70,6 @@ export default function GamePlayScreen() {
   };
 
   const triggerIntervention = () => {
-    
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
@@ -97,7 +101,6 @@ export default function GamePlayScreen() {
 
       await AsyncStorage.setItem(key, JSON.stringify(sessions));
 
-   
       const totalKey = `total_screen_time`;
       const totalTime = await AsyncStorage.getItem(totalKey);
       const currentTotal = totalTime ? parseInt(totalTime) : 0;
@@ -131,18 +134,17 @@ export default function GamePlayScreen() {
     setShowVideo(false);
 
     Alert.alert(
-      'Take a Break?',
-      'You\'ve been playing for a while. Would you like to continue or take a break?',
+      '🌟 Time for a Break?',
+      `You've been playing for ${Math.floor(playTime / 60)} minutes. Taking breaks helps you play better!`,
       [
         {
-          text: 'Take a Break',
+          text: '🏠 Take a Break',
           onPress: () => router.back(),
           style: 'default',
         },
         {
-          text: 'Continue Playing',
+          text: '🎮 Keep Playing',
           onPress: () => {
-            
             timerRef.current = setInterval(() => {
               setPlayTime((prev) => {
                 const newTime = prev + 1;
@@ -159,15 +161,12 @@ export default function GamePlayScreen() {
 
   const handleBackPress = () => {
     Alert.alert(
-      'Exit Game?',
-      'Are you sure you want to exit?',
+      '🎮 Exit Game?',
+      'Are you sure you want to stop playing?',
       [
+        { text: 'No, Keep Playing', style: 'cancel' },
         {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Exit',
+          text: 'Yes, Exit',
           onPress: () => router.back(),
           style: 'destructive',
         },
@@ -177,7 +176,6 @@ export default function GamePlayScreen() {
 
   return (
     <View style={styles.container}>
-  
       <WebView
         source={{ uri: gameUrl as string }}
         style={styles.webview}
@@ -187,18 +185,30 @@ export default function GamePlayScreen() {
         domStorageEnabled={true}
       />
 
+      {/* Floating Back Button */}
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-        <Ionicons name="arrow-back" size={28} color="#FFFFFF" />
+        <LinearGradient
+          colors={['#FFB6D9', '#FF8DC7']}
+          style={styles.backButtonGradient}
+        >
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+        </LinearGradient>
       </TouchableOpacity>
 
-      
+      {/* Timer Display */}
       <View style={styles.timerContainer}>
-        <Ionicons name="time" size={20} color="#FFFFFF" />
-        <Text style={styles.timerText}>
-          {Math.floor(playTime / 60)}:{(playTime % 60).toString().padStart(2, '0')}
-        </Text>
+        <LinearGradient
+          colors={['#A8E6CF', '#7FD1AE']}
+          style={styles.timerGradient}
+        >
+          <Ionicons name="time" size={18} color="#FFFFFF" />
+          <Text style={styles.timerText}>
+            {Math.floor(playTime / 60)}:{(playTime % 60).toString().padStart(2, '0')}
+          </Text>
+        </LinearGradient>
       </View>
 
+      {/* Intervention Video Modal */}
       <Modal
         visible={showVideo}
         animationType="fade"
@@ -219,6 +229,13 @@ export default function GamePlayScreen() {
               }
             }}
           />
+          <LinearGradient
+            colors={['rgba(255, 105, 180, 0.9)', 'rgba(255, 182, 193, 0.9)']}
+            style={styles.interventionBadge}
+          >
+            <Ionicons name="eye-outline" size={24} color="#FFFFFF" />
+            <Text style={styles.interventionText}>Screen Time Break 🌟</Text>
+          </LinearGradient>
         </View>
       </Modal>
     </View>
@@ -237,31 +254,43 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 25,
+    overflow: 'hidden',
+    shadowColor: '#FF69B4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  backButtonGradient: {
+    width: 50,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10,
   },
   timerContainer: {
     position: 'absolute',
     top: 50,
     right: 20,
+    borderRadius: 25,
+    overflow: 'hidden',
+    shadowColor: '#A8E6CF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  timerGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    zIndex: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 8,
   },
   timerText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 6,
+    fontWeight: '800',
   },
   videoContainer: {
     flex: 1,
@@ -272,5 +301,25 @@ const styles = StyleSheet.create({
   video: {
     width: screenWidth,
     height: screenHeight,
+  },
+  interventionBadge: {
+    position: 'absolute',
+    top: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 30,
+    gap: 12,
+    shadowColor: '#FF69B4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  interventionText: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
 });
