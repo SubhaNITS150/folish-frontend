@@ -1,43 +1,52 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  forwardRef,
+} from "react";
 import {
-    Animated,
-    Platform,
-    StyleSheet,
-    Text,
-    ToastAndroid,
-    useWindowDimensions,
-    View,
-} from 'react-native';
+  Animated,
+  Platform,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
-interface Props {}
+type Props = object; // ✔ prevents empty-interface lint error
 
 export const DURATION = {
   LENGTH_SHORT: 2000,
   FOREVER: 0,
 };
 
-const Toast: React.FC<Props> = React.forwardRef((_props, ref) => {
+const Toast = forwardRef<any, Props>((_props, ref) => {
   const { height } = useWindowDimensions();
 
-  const [isShow, setShow] = useState<boolean>(false);
-  const [toastText, setToastText] = useState<string>('');
-  const opacityValue = useRef<Animated.Value>(new Animated.Value(1)).current;
-  let animation: Animated.CompositeAnimation | null = null;
-  let timer: ReturnType<typeof setTimeout> | null = null;
-  let isShowing: boolean = false;
+  const [isShow, setShow] = useState(false);
+  const [toastText, setToastText] = useState("");
+  const opacityValue = useRef(new Animated.Value(1)).current;
+
+  const animation = useRef<Animated.CompositeAnimation | null>(null);
+  const timer = useRef<NodeJS.Timeout | null>(null);
+  const isShowing = useRef(false);
 
   useEffect(() => {
     return () => {
-      animation && animation.stop();
-      timer && clearTimeout(timer);
+      animation.current?.stop();
+      if (timer.current) clearTimeout(timer.current);
     };
-  }, [animation, timer]);
+  }, []);
 
   useImperativeHandle(ref, () => ({
     show: (text: string) => {
-      Platform.OS === 'android'
-        ? ToastAndroid.show(text, ToastAndroid.SHORT)
-        : show(text);
+      if (Platform.OS === "android") {
+        ToastAndroid.show(text, ToastAndroid.SHORT);
+      } else {
+        show(text);
+      }
     },
   }));
 
@@ -45,40 +54,44 @@ const Toast: React.FC<Props> = React.forwardRef((_props, ref) => {
     setShow(true);
     setToastText(text);
 
-    animation = Animated.timing(opacityValue, {
+    animation.current = Animated.timing(opacityValue, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     });
-    animation.start(() => {
-      isShowing = true;
+
+    animation.current.start(() => {
+      isShowing.current = true;
       close();
     });
   };
 
   const close = () => {
-    let delay = DURATION.LENGTH_SHORT;
+    const delay = DURATION.LENGTH_SHORT;
 
-    if (!isShowing && !isShow) {
+    if (!isShowing.current && !isShow) {
       return;
     }
-    timer && clearTimeout(timer);
-    timer = setTimeout(() => {
-      animation = Animated.timing(opacityValue, {
-        toValue: 0.0,
+
+    if (timer.current) clearTimeout(timer.current);
+
+    timer.current = setTimeout(() => {
+      animation.current = Animated.timing(opacityValue, {
+        toValue: 0,
         duration: 500,
         useNativeDriver: true,
       });
-      animation.start(() => {
+
+      animation.current.start(() => {
         setShow(false);
-        isShowing = false;
+        isShowing.current = false;
       });
     }, delay);
   };
 
   return (
     <>
-      {isShow && Platform.OS !== 'android' && (
+      {isShow && Platform.OS !== "android" && (
         <View
           style={[styles.container, { top: height - 120 }]}
           pointerEvents="none"
@@ -92,26 +105,29 @@ const Toast: React.FC<Props> = React.forwardRef((_props, ref) => {
   );
 });
 
+// ✔ Fix ESLint display-name error
+Toast.displayName = "Toast";
+
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     elevation: 999,
-    alignItems: 'center',
+    alignItems: "center",
     zIndex: 10000,
   },
   content: {
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: "rgba(0,0,0,0.6)",
     borderRadius: 12,
     padding: 10,
     bottom: 64,
-    maxWidth: '80%',
+    maxWidth: "80%",
   },
   text: {
     fontSize: 14,
-    color: '#f8f8f8',
-    textAlign: 'center',
+    color: "#f8f8f8",
+    textAlign: "center",
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
