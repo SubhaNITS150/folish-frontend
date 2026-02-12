@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { router } from "expo-router";
 import OtpInput from "@/features/auth/components/OTPInput";
 
@@ -15,19 +15,22 @@ export default function OtpScreen() {
   const isComplete = otp.length === 6;
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.centerBox}>
-        <Text style={styles.title}>Enter Verification Code</Text>
+        <Text style={styles.header}>Enter Verification Code</Text>
+
         <Text style={styles.subtitle}>
           Please enter the 6-digit code sent to your phone/email.
         </Text>
 
-        <OtpInput length={6} onChangeOtp={setOtp} />
+        <View style={styles.formCard}>
+          <OtpInput length={6} onChangeOtp={setOtp} />
+        </View>
 
         <TouchableOpacity
           style={[
             styles.button,
-            { backgroundColor: isComplete ? "#007AFF" : "#9FC5FF" },
+            { backgroundColor: isComplete ? "#ff2e8b" : "#f3a6c4" },
           ]}
           disabled={!isComplete}
           onPress={handleSubmit}
@@ -35,44 +38,60 @@ export default function OtpScreen() {
           <Text style={styles.buttonText}>Verify OTP</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "white",
-    justifyContent: "center",   // ⬅ vertical centering
-    alignItems: "center",       // ⬅ horizontal centering
+    flexGrow: 1,
+    backgroundColor: "#fde6ef",
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 25,
   },
+
   centerBox: {
     width: "100%",
-    alignItems: "center",        // center children horizontally
+    alignItems: "center",
   },
-  title: {
+
+  header: {
     fontSize: 26,
     fontWeight: "700",
     textAlign: "center",
+    color: "#ff2e8b",
     marginBottom: 10,
   },
+
   subtitle: {
     fontSize: 15,
     textAlign: "center",
-    color: "#666",
-    marginBottom: 30,
+    color: "#b34d7d",
+    marginBottom: 25,
   },
+
+  formCard: {
+    width: "100%",
+    backgroundColor: "#f8dbe6",
+    borderRadius: 20,
+    paddingVertical: 25,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+
+
   button: {
     width: "100%",
-    paddingVertical: 14,
-    borderRadius: 10,
+    paddingVertical: 16,
+    borderRadius: 25,
     alignItems: "center",
     marginTop: 30,
   },
+
   buttonText: {
     color: "white",
-    fontWeight: "600",
+    fontWeight: "700",
     fontSize: 16,
   },
 });

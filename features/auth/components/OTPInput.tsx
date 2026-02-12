@@ -48,18 +48,22 @@ export default function OtpInput({ length = 6, onChangeOtp }: OtpInputProps) {
 const styles = StyleSheet.create({
   otpContainer: {
     flexDirection: "row",
-    justifyContent: "center",      // center horizontally
-    alignItems: "center",          // center vertically within row
-    gap: 12,                        // spacing between boxes
+    justifyContent: "space-between", // evenly distribute
+    alignItems: "center",
+    width: "100%",
   },
+
   otpBox: {
-    width: 50,
-    height: 55,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 12,
+    width: "14%", // responsive width (6 boxes fit perfectly)
+    aspectRatio: 1, // makes it square
+    borderWidth: 2,
+    borderColor: "#ff2e8b", // darker pink border
+    borderRadius: 14,
     textAlign: "center",
     fontSize: 22,
-    fontWeight: "600",
+    fontWeight: "700",
+    backgroundColor: "#f3a6c4", // soft darker pink fill
+    color: "#ffffff", // white text
   },
 });
+
