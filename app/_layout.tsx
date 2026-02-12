@@ -10,21 +10,97 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      {/* StatusBar from new code (kept + unified) */}
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+
+      <Stack screenOptions={{ headerShown: false }}>
+
+        {/* 🔵 Existing onboarding + auth flows */}
         <Stack.Screen name="onboarding/onboardingscreen" options={{ headerShown: false }} />
         <Stack.Screen name="auth/register" options={{ headerShown: false }} />
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-        <Stack.Screen name="auth/forgotpassword" options={{ headerShown: false }} /> 
-        <Stack.Screen name="auth/otp" options={{ headerShown: false }} /> 
+        <Stack.Screen name="auth/forgotpassword" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/otp" options={{ headerShown: false }} />
 
-        {/* Tabs layout */}
+        {/* 🔵 Existing Tabs layout */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-        {/* Modal example */}
+        {/* 🔵 Existing Modal */}
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
 
-      <StatusBar style="auto" />
+        {/* 🔴 NEW ADDITIONS BELOW */}
+
+        {/* Full-screen game player */}
+        <Stack.Screen
+          name="games/play"
+          options={{
+            presentation: 'fullScreenModal',
+            headerShown: false,
+            animation: 'slide_from_bottom',
+          }}
+        />
+
+        {/* Video player full-screen modal */}
+        <Stack.Screen
+          name="videos/watch"
+          options={{
+            presentation: 'fullScreenModal',
+            headerShown: false,
+            animation: 'slide_from_bottom',
+          }}
+        />
+
+        {/* Video History */}
+        <Stack.Screen
+          name="videos/history"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}
+        />
+
+        {/* Personalized video feed */}
+        <Stack.Screen
+          name="videos/personalized"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}
+        />
+
+        {/* Profile screens */}
+        <Stack.Screen
+          name="profile/settings"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}
+        />
+
+        <Stack.Screen
+          name="profile/parental-settings"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}
+        />
+
+        <Stack.Screen
+          name="profile/edit-profile"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}
+        />
+
+        <Stack.Screen
+          name="profile/achievements"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}
+        />
+      </Stack>
     </ThemeProvider>
   );
 }
